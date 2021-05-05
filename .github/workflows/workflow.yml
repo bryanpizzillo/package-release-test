@@ -95,7 +95,7 @@ jobs:
           echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
 
           ######## ERROR IF PR FROM FORK
-          if [ "$REPO_OWNER" != "NCIOCPL" ]; then
+          if [ "$REPO_OWNER" != "bryanpizzillo" ]; then
             echo "YOU SHOULD NOT SEND PR FROM FORK!!!"
             exit 1
           fi
