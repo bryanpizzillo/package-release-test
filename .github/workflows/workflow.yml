@@ -51,6 +51,12 @@ jobs:
           mkdir build
           echo $BUILD_INFO
           echo $BUILD_INFO > ./build/build-info.json
+      ## Upload the test results artifact
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: build
       - name: Log
         run: |
           echo ${{ github.repository }}
