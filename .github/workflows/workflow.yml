@@ -99,11 +99,26 @@ jobs:
             echo "YOU SHOULD NOT SEND PR FROM FORK!!!"
             exit 1
           fi
+      ## COPY THIS
       - name: Checkout previous version
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.before }}
           path: previous-version
+      ## COPY THIS
+      - name: Checkout New version
+        uses: actions/checkout@v2
+        with:
+          path: new-version
+      ## COPY THIS
+      - name: Set Package Versions
+        id: versions
+        run: |
+          NEW_VERSION=$(jr -r '.version' < ./new-version/package.json)
+          OLD_VERSION=$(jr -r '.version' < ./old-version/package.json)
+          echo ::set-output name=new_version::${NEW_VERSION}
+          echo ::set-output name=old_version::${OLD_VERSION}
       - name: Test
         run: |
-          cat ./previous-version/package.json
+          echo ${{ steps.versions.outputs.new_version }}
+          echo ${{ steps.versions.outputs.old_version }}
