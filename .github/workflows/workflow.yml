@@ -114,8 +114,8 @@ jobs:
       - name: Set Package Versions
         id: versions
         run: |
-          NEW_VERSION=$(jr -r '.version' < ./new-version/package.json)
-          OLD_VERSION=$(jr -r '.version' < ./old-version/package.json)
+          NEW_VERSION=$(jq -r '.version' < ./new-version/package.json)
+          OLD_VERSION=$(jq -r '.version' < ./old-version/package.json)
           echo ::set-output name=new_version::${NEW_VERSION}
           echo ::set-output name=old_version::${OLD_VERSION}
       - name: Test
