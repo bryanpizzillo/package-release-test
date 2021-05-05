@@ -63,7 +63,7 @@ jobs:
     if: |
       startsWith(github.repository, 'bryanpizzillo') &&
       github.event_name == 'push' &&
-      (github.head_ref == 'master' || github.head_ref == 'main')
+      (github.ref == 'ref/heads/master' || github.ref == 'ref/heads/main')
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -96,7 +96,7 @@ jobs:
       - name: Checkout previous version
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.push.before }}
+          ref: ${{ github.event.before }}
           path: previous-version
       - name: Test
         run: |
