@@ -63,7 +63,7 @@ jobs:
     if: |
       startsWith(github.repository, 'bryanpizzillo') &&
       github.event_name == 'push' &&
-      (github.ref == 'ref/heads/master' || github.ref == 'ref/heads/main')
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     needs: build
     runs-on: ubuntu-latest
     steps:
