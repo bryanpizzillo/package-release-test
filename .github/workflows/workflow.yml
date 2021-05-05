@@ -104,7 +104,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.before }}
-          path: previous-version
+          path: old-version
       ## COPY THIS
       - name: Checkout New version
         uses: actions/checkout@v2
