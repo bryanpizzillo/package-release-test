@@ -51,6 +51,12 @@ jobs:
           mkdir build
           echo $BUILD_INFO
           echo $BUILD_INFO > ./build/build-info.json
+      - name: Log
+        run: |
+          echo ${{ github.repository }}
+          echo ${{ github.event_name }}
+          echo ${{ github.head_ref }}
+          echo ${{ github.event.push.before }}
   release:
     name: Create a Github release and deploy to prod NS
     ## Only run this job when it is the push to main (backwards compat with master)
