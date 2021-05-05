@@ -1,0 +1,19 @@
+{
+  "name": "package-release-test",
+  "version": "1.0.0",
+  "description": "Test repo for a workflow that publishes & releases a package on push to main",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bryanpizzillo/package-release-test.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bryanpizzillo/package-release-test/issues"
+  },
+  "homepage": "https://github.com/bryanpizzillo/package-release-test#readme"
+}

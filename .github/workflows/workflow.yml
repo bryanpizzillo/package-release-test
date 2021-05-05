@@ -1,0 +1,97 @@
+name: Workflow
+on: [push, pull_request]
+jobs:
+  build:
+    name: Build, Test and Upload Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      ## Setup variables for build info
+      - name: Set Variables
+        id: set_vars
+        run: |
+          ## PUSH
+          if [ "${{ github.event_name }}" == "push" ]; then
+            BUILD_NAME=$(sed -E 's/refs\/(heads|tags)\///; s/\//__/g;' <<< $GITHUB_REF)
+            BRANCH_NAME=$(sed -E 's/refs\/(heads|tags)\///;' <<< $GITHUB_REF)
+            COMMIT_HASH=$(echo "${GITHUB_SHA}")
+          ## PULL_REQUEST
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            BUILD_NAME=$(echo "pr-${{ github.event.pull_request.number }}")
+            BRANCH_NAME=$(echo "pr-${{ github.event.pull_request.number }}")
+            COMMIT_HASH=$(echo "${{ github.event.pull_request.head.sha }}")
+          else
+            ## ERROR
+            exit 1
+          fi
+
+          ## For step checks and artifact deployment path.
+          ## Same for push and PR
+          export REPO_FULL=${{ github.repository }}
+          export REPO_RE='([^/]+)/(.*)'
+          [[ "$REPO_FULL" =~ $REPO_RE ]]
+          REPO_OWNER=$(echo "${BASH_REMATCH[1]}")
+          REPO_NAME=$(echo "${BASH_REMATCH[2]}")
+
+          ## Set step outputs for later use
+          echo ::set-output name=build_name::${BUILD_NAME}
+          echo ::set-output name=branch_name::${BRANCH_NAME}
+          echo ::set-output name=commit_hash::${COMMIT_HASH}
+          echo ::set-output name=repo_owner::${REPO_OWNER}
+          echo ::set-output name=repo_name::${REPO_NAME}
+      ## This clones and checks out.
+      - name: Checkout branch
+        uses: actions/checkout@v1
+      ## Generate build-info.json to house information
+      ## about this specific build. Used for product test
+      ## deployment
+      - name: Create Build Information
+        env:
+          BUILD_INFO: ${{ toJson(steps.set_vars.outputs) }}
+        run: |
+          mkdir build
+          echo $BUILD_INFO
+          echo $BUILD_INFO > ./build/build-info.json
+  release:
+    name: Create a Github release and deploy to prod NS
+    ## Only run this job when it is the push to main (backwards compat with master)
+    if: |
+      startsWith(github.repository, 'bryanpizzillo') &&
+      github.event_name == 'push' &&
+      (github.head_ref == 'master' || github.head_ref == 'main')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download built app
+        uses: actions/download-artifact@v1
+        with:
+          name: build-artifact
+      ## Setup vars from Build Info from build job
+      - name: Setup Job env
+        run: |
+          ## Set Vars
+          BUILD_NAME=$(jq -r '.build_name' < ./build-artifact/build-info.json)
+          BRANCH_NAME=$(jq -r '.branch_name' < ./build-artifact/build-info.json)
+          COMMIT_HASH=$(jq -r '.commit_hash' < ./build-artifact/build-info.json)
+          REPO_OWNER=$(jq -r '.repo_owner' < ./build-artifact/build-info.json)
+          REPO_NAME=$(jq -r '.repo_name' < ./build-artifact/build-info.json)
+
+          ## Set Action Env
+          echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
+          echo "REPO_OWNER=${REPO_OWNER}" >> $GITHUB_ENV
+          echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
+
+          ######## ERROR IF PR FROM FORK
+          if [ "$REPO_OWNER" != "NCIOCPL" ]; then
+            echo "YOU SHOULD NOT SEND PR FROM FORK!!!"
+            exit 1
+          fi
+      - name: Checkout previous version
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.push.before }}
+          path: previous-version
+      - name: Test
+        run: |
+          cat ./previous-version/package.json
