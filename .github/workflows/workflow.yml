@@ -119,7 +119,7 @@ jobs:
           OLD_VERSION=$(jq -r '.version' < ./old-version/package.json)
           echo ::set-output name=new_version::${NEW_VERSION}
           echo ::set-output name=old_version::${OLD_VERSION}
-      - uses: octokit/graphql-action@v2.x
+      - uses: octokit/graphql-action@v2.2.20
         id: get_latest_release
         with:
           query: |
