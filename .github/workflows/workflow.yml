@@ -141,7 +141,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Test
         run: |
-          echo ${{ steps.versions.outputs.new_version }}
-          echo ${{ steps.versions.outputs.old_version }}
+          echo "${{ steps.versions.outputs.new_version }}"
+          echo "${{ steps.versions.outputs.old_version }}"
 
-          echo ${{ steps.get_latest_release.outputs.data }}
+          echo "${{ steps.get_latest_release.outputs.data }}"
