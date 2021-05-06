@@ -119,7 +119,29 @@ jobs:
           OLD_VERSION=$(jq -r '.version' < ./old-version/package.json)
           echo ::set-output name=new_version::${NEW_VERSION}
           echo ::set-output name=old_version::${OLD_VERSION}
+      - uses: octokit/graphql-action@v2.x
+        id: get_latest_release
+        with:
+          query: |
+            query release($owner:String!,$repo:String!) {
+              repository(owner:$owner,name:$repo) {
+                releases(first:1) {
+                  nodes {
+                    name
+                    createdAt
+                    tagName
+                    description
+                  }
+                }
+              }
+            }
+          owner: ${{ github.event.repository.owner.name }}
+          repo: ${{ github.event.repository.name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Test
         run: |
           echo ${{ steps.versions.outputs.new_version }}
           echo ${{ steps.versions.outputs.old_version }}
+
+          echo ${{ steps.get_latest_release.outputs.data }}
