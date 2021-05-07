@@ -146,3 +146,5 @@ jobs:
           echo "${{ github.push.repository.id }}"
           echo "${{ toJSON(github) }}"
           echo "${{ steps.get_latest_release.outputs.data }}"
+          echo "-------"
+          cat ${{GITHUB_EVENT_PATH}}
