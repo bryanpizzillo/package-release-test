@@ -140,6 +140,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Test
+        env:
+          FOO: ${{ env.GITHUB_EVENT_PATH }}
         run: |
           echo "${{ steps.versions.outputs.new_version }}"
           echo "${{ steps.versions.outputs.old_version }}"
@@ -147,5 +149,5 @@ jobs:
           echo "${{ toJSON(github) }}"
           echo "${{ toJSON(steps.get_latest_release.outputs.data) }}"
           echo "-------"
-          echo "$GITHUB_EVENT_PATH"
+          echo "$FOO"
           printenv
