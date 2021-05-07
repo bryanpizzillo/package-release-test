@@ -140,7 +140,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Test
-        env:
-          FOO: ${{ env.GITHUB_EVENT_PATH }}
         run: |
           printenv
+          echo "-----------"
+          cat $GITHUB_EVENT_PATH
