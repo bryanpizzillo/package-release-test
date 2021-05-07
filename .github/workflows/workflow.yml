@@ -141,10 +141,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Test
         run: |
-          echo "${{ steps.versions.outputs.new_version }}"
-          echo "${{ steps.versions.outputs.old_version }}"
-          echo "${{ github.push.repository.id }}"
-          echo "${{ toJSON(github) }}"
-          echo "${{ toJSON(steps.get_latest_release.outputs.data) }}"
-          echo "-------"
+          #echo "${{ steps.versions.outputs.new_version }}"
+          #echo "${{ steps.versions.outputs.old_version }}"
+          #echo "${{ github.push.repository.id }}"
+          #echo "${{ toJSON(github) }}"
+          #echo "${{ toJSON(steps.get_latest_release.outputs.data) }}"
+          #echo "-------"
           cat $GITHUB_EVENT_PATH
