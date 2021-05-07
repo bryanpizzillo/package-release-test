@@ -147,4 +147,4 @@ jobs:
           #echo "${{ toJSON(github) }}"
           #echo "${{ toJSON(steps.get_latest_release.outputs.data) }}"
           #echo "-------"
-          cat $GITHUB_EVENT_PATH
+          echo $GITHUB_EVENT_PATH
