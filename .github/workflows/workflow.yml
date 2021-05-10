@@ -99,48 +99,12 @@ jobs:
             echo "YOU SHOULD NOT SEND PR FROM FORK!!!"
             exit 1
           fi
-      ## COPY THIS
-      - name: Checkout previous version
-        uses: actions/checkout@v2
+      - name: Check Package Version
+        uses: nciocpl/cgov-version-check-action
         with:
-          ref: ${{ github.event.before }}
-          path: old-version
-      ## COPY THIS
-      - name: Checkout New version
-        uses: actions/checkout@v2
-        with:
-          path: new-version
-      ## COPY THIS
-      - name: Set Package Versions
-        id: versions
+          package-type: npm
+          checks-to-perform: 'isGreaterVersion'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Finished
         run: |
-          ls -l
-          NEW_VERSION=$(jq -r '.version' < ./new-version/package.json)
-          OLD_VERSION=$(jq -r '.version' < ./old-version/package.json)
-          echo ::set-output name=new_version::${NEW_VERSION}
-          echo ::set-output name=old_version::${OLD_VERSION}
-      - uses: octokit/graphql-action@v2.2.20
-        id: get_latest_release
-        with:
-          query: |
-            query release($owner:String!,$repo:String!) {
-              repository(owner:$owner,name:$repo) {
-                releases(first:1) {
-                  nodes {
-                    name
-                    createdAt
-                    tagName
-                    description
-                  }
-                }
-              }
-            }
-          owner: ${{ github.event.repository.owner.name }}
-          repo: ${{ github.event.repository.name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Test
-        run: |
-          printenv
-          echo "-----------"
-          cat $GITHUB_EVENT_PATH
+          echo "success!"
