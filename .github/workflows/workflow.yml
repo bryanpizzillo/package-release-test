@@ -100,7 +100,7 @@ jobs:
             exit 1
           fi
       - name: Check Package Version
-        uses: nciocpl/cgov-version-check-action@v0.0.5
+        uses: nciocpl/cgov-version-check-action@v0.0.6
         with:
           package-type: npm
           checks-to-perform: 'isGreaterVersion'
