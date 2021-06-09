@@ -103,7 +103,7 @@ jobs:
         uses: nciocpl/cgov-version-check-action@v0.0.8-beta1
         with:
           package-type: npm
-          checks-to-perform: 'isGreaterVersion,hasNeverBeenReleased'
+          checks-to-perform: 'hasNeverBeenReleased'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Finished
         run: |
