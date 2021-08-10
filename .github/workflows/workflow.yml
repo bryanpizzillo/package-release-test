@@ -51,6 +51,12 @@ jobs:
           mkdir build
           echo $BUILD_INFO
           echo $BUILD_INFO > ./build/build-info.json
+      ## Dump Github Info
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"        
       ## Upload the test results artifact
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
